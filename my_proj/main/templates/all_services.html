@@ -116,13 +116,13 @@
 
     
     {% if user.is_authenticated %}
-        <!-- Кнопка выхода для залогиненных пользователей -->
+      
         <form method="post" action="{% url 'logout' %}">
             {% csrf_token %}
             <button type="submit" class="nav-btn logout-btn">Выйти</button>
         </form>
     {% else %}
-        <!-- Кнопка входа для незалогиненных пользователей -->
+     
         <a href="{% url 'login' %}" class="nav-btn login-btn">Войти</a>
     {% endif %}
 
@@ -136,7 +136,6 @@
             </a>
             <div class="service-price">{{ service.price }}</div>
     
-            <!-- Форма для редактирования услуги (только для залогиненных пользователей) -->
             {% if user.is_authenticated %}
             <form method="post">
                 {% csrf_token %}

@@ -9,7 +9,6 @@ def home(request):
     success_message = None
 
     if request.method == 'POST':
-        # Обработка формы отзыва
         if 'submit_review' in request.POST:
             review_form = AddReviewForm(request.POST, request.FILES)
             if review_form.is_valid():
@@ -34,7 +33,6 @@ def home(request):
         if 'submit_add_appointment' in request.POST:
             appointment_form = CustomAppointmentForm(request.POST)
             if appointment_form.is_valid():
-                # Получаем или создаем клиента
                 client_name = appointment_form.cleaned_data['client_name']
                 client_phone = appointment_form.cleaned_data['client_phone']
                 client_email = appointment_form.cleaned_data['client_email']
@@ -45,7 +43,7 @@ def home(request):
                     defaults={'email': client_email}
                 )
 
-                # Создаем новый Appointment
+                
                 appointment = Appointment(
                     client=client,
                     employee=appointment_form.cleaned_data['employee'],
@@ -54,7 +52,7 @@ def home(request):
                     status='planned'
                 )
                 appointment.save()
-                success_message = "Ваша запись добавлена"  # Сообщение после добавления
+                success_message = "Ваша запись добавлена"  
                 appointment_form = CustomAppointmentForm()  # Очищаем форму после успешного сохранения
 
     context = {
@@ -67,13 +65,12 @@ def home(request):
 
 def services_list(request):
     services = Service.objects.all()
-    # Получить просмотренные услуги из сессии
     viewed_services = request.session.get('viewed_services', [])
 
-    # Создать список кортежей (услуга, форма для редактирования этой услуги)
+
     service_forms = [(service, AddServiceModelForm(instance=service)) for service in services]
     
-    # Инициализация форм и сообщений
+    
     add_form = AddServiceModelForm()
     appointment_form = CustomAppointmentForm()
     success_message = None
@@ -85,7 +82,7 @@ def services_list(request):
             add_form = AddServiceModelForm(request.POST)
             if add_form.is_valid():
                 new_service = add_form.save(commit=False)
-                new_service.employee = Employee.objects.first()  # Связать с первым сотрудником
+                new_service.employee = Employee.objects.first()  
                 new_service.save()
                 return redirect('services_list')
 
@@ -97,7 +94,7 @@ def services_list(request):
                     form.save()
                     return redirect('services_list')
 
-        # Проверить, добавляется ли новая запись (Appointment)
+        
         if 'submit_add_appointment' in request.POST:
             appointment_form = CustomAppointmentForm(request.POST)
             if appointment_form.is_valid():
@@ -119,7 +116,7 @@ def services_list(request):
                     status='planned'
                 )
                 appointment.save()
-                success_message = "Ваша запись добавлена"  # Сообщение об успешной записи
+                success_message = "Ваша запись добавлена"  
                 appointment_form = CustomAppointmentForm()  # Очищаем форму после успешного сохранения
 
     context = {
@@ -150,10 +147,7 @@ def add_service(request):
 def service_detail(request, service_id):
     try:
         service = Service.objects.get(id=service_id)
-        # Получить список просмотренных услуг из сессии
         viewed_services = request.session.get('viewed_services', [])
-
-        # Добавить текущий ID услуги, если он еще не в списке
         if service_id not in viewed_services:
             viewed_services.append(service_id)
             request.session['viewed_services'] = viewed_services  # Сохранить обратно в сессию
