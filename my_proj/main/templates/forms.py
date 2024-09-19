@@ -19,3 +19,4 @@ class CustomAppointmentForm(forms.Form):
     employee = forms.ModelChoiceField(queryset=Employee.objects.all(), label='Выберите мастера')
     service = forms.ModelChoiceField(queryset=Service.objects.all(), label='Выберите услугу')
     appointment_date = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}), label='Дата и время')
+    

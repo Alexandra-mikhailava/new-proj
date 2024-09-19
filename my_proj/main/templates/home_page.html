@@ -219,7 +219,7 @@
     <div class="container form-container">
         <h3>Оставить отзыв</h3>
         <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}  <!-- Убедитесь, что этот тег присутствует здесь -->
+            {% csrf_token %}  
             
             {% if review_form.errors %}
             <div class="form-errors">

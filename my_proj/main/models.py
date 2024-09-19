@@ -47,3 +47,4 @@ class Appointment(models.Model):
 
     def __str__(self):
         return f"{self.client} - {self.service} - {self.appointment_date}"
+    
