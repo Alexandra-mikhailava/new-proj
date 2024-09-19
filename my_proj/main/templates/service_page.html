@@ -1,0 +1,19 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ service_obj.name }}</title>
+    <link rel="stylesheet" href="{% static 'main/style/style.css' %}">
+</head>
+<body>
+    <h1>{{ service_obj.name }}</h1>
+    <div class="price">{{ service_obj.price }} р.</div>
+    <p>Классический маникюр с нанесением покрытия, которое придает ногтям блеск и защищает их от повреждений. Идеальный выбор для ухода за ногтями.</p>
+    <p>Длительность: {{ service_obj.duration }} минут</p>
+    <img src="{% static 'main/img/french.png' %}" alt="nails" width="25%"/>
+    <!--img src="{{ service_obj.image.url }}" alt="{{ service_obj.name }}" /-->
+    <p>Мастер {{ service_obj.employee.name }}</p>
+</body>
+</html>

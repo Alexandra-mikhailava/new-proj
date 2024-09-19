@@ -1,0 +1,167 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Услуги</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: 'Arial', sans-serif;
+        }
+        h1 {
+            font-size: 3rem;
+            color: #b08080;
+            text-decoration: underline;
+            text-decoration-thickness: 2px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .container {
+            width: 80%;
+            max-width: 800px;
+            margin-top: 20px;
+        }
+        .service {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+            font-size: 1.5rem;
+            color: #b08080;
+        }
+        .service-name {
+            flex: 1;
+            text-align: left;
+            text-decoration: underline;
+            text-decoration-thickness: 1.5px;
+        }
+        .service-name.viewed {
+            color: darkviolet; /* Цвет для просмотренных услуг */
+        }
+        .service-price {
+            flex: 1;
+            text-align: right;
+            margin-left: 100px;
+            text-decoration: underline;
+            text-decoration-thickness: 1.5px;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        .add-service {
+            margin-top: 20px;
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .add-service h2 {
+            margin-bottom: 10px;
+            color: #b08080;
+        }
+        .add-service form {
+            display: flex;
+            flex-direction: column;
+        }
+        .add-service form input, .add-service form button {
+            padding: 10px;
+            margin: 5px 0;
+            font-size: 1rem;
+        }
+        .errorlist {
+            color: red;
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+        }
+        /* Стили для кнопок */
+        .nav-btn {
+            position: absolute;
+            top: 20px;
+            padding: 10px 20px;
+            background-color: #b08080;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        /* Кнопка "Назад" */
+        .back-btn {
+            left: 20px;
+        }
+        /* Кнопка "Выйти" */
+        .logout-btn {
+            right: 20px;
+        }
+        /* Кнопка "Войти" */
+        .login-btn {
+            right: 120px; /* Расстояние слева от кнопки "Выйти" */
+        }
+    </style>
+</head>
+<body>
+    <!-- Кнопка "Назад" всегда доступна -->
+    <a href="{% url 'home' %}" class="nav-btn back-btn">На главную</a>
+
+    <!-- Кнопки "Войти" и "Выйти" -->
+    {% if user.is_authenticated %}
+        <!-- Кнопка выхода для залогиненных пользователей -->
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="nav-btn logout-btn">Выйти</button>
+        </form>
+    {% else %}
+        <!-- Кнопка входа для незалогиненных пользователей -->
+        <a href="{% url 'login' %}" class="nav-btn login-btn">Войти</a>
+    {% endif %}
+
+    <h1>Услуги</h1>
+
+    <div class="container">
+        <!-- Список услуг -->
+        {% for service, form in service_forms %}
+        <div class="service">
+            <!-- Добавляем ссылку на детальную страницу услуги -->
+            <a href="{% url 'service_detail' service.id %}" class="service-name {% if service.id in viewed_services %}viewed{% endif %}">
+                {{ service.name }}
+            </a>
+            <div class="service-price">{{ service.price }}</div>
+    
+            <!-- Форма для редактирования услуги (только для залогиненных пользователей) -->
+            {% if user.is_authenticated %}
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" name="submit_edit_service_{{ service.id }}">Сохранить изменения</button>
+            </form>
+            {% endif %}
+        </div>
+        {% empty %}
+        <p>Услуги отсутствуют.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Форма для добавления новой услуги (только для залогиненных пользователей) -->
+    {% if user.is_authenticated %}
+    <div class="add-service">
+        <h2>Добавить новую услугу</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ add_form.as_p }}
+            <button type="submit" name="add_service">Добавить услугу</button>
+        </form>
+    </div>
+    {% endif %}
+</body>
+</html>
